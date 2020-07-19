@@ -1,5 +1,6 @@
 package frc.robot.commands
 
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import frc.robot.OI
@@ -10,11 +11,13 @@ import kotlin.math.abs
 
 class DriverSpec {
     private lateinit var driveSub: DriveSub
+    private lateinit var oi: OI
     private lateinit var driver: Driver
 
     @BeforeEach fun beforeEach () {
         driveSub = mock()
-        driver = Driver(driveSub, mock())
+        oi = mock()
+        driver = Driver(driveSub, oi)
     }
 
     @Test fun processJoystickInput_doesSquareX () {
@@ -74,11 +77,12 @@ class DriverSpec {
     }
 
     @Test fun execute_callsDriveSubDriveWithProcessedJoystickInput () {
+        doReturn(0.5).`when`(oi).getX()
+        doReturn(0.5).`when`(oi).getY()
+
         driver.execute()
 
-        val oi = OI(mock())
-
-        val (expectedX, expectedY) = driver.processJoystickInput(oi.getX(), oi.getY())
+        val (expectedX, expectedY) = driver.processJoystickInput(0.5, 0.5)
 
         verify(driveSub).drive(expectedX, expectedY)
     }
