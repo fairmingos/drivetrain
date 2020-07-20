@@ -20,57 +20,61 @@ class DriveCommandSpec {
         driveCommand = DriveCommand(differentialDrive, oi)
     }
 
-    @Test fun processJoystickInput_doesSquareX () {
+    @Test fun processJoystickInput_doesSquareRot () {
         for (i in -10..10) {
             val joystickX = i.toDouble()
 
-            val (x) = driveCommand.processJoystickInput(joystickX, 0.0)
+            val (_, rot) = driveCommand.processJoystickInput(joystickX, 0.0)
 
-            assert(abs(x) == joystickX * joystickX)
+            assert(abs(rot) == joystickX * joystickX)
         }
     }
 
-    @Test fun processJoystickInput_doesSquareY () {
+    @Test fun processJoystickInput_doesSquareFwd () {
         for (i in -10..10) {
             val joystickY = i.toDouble()
 
-            val (_, y) = driveCommand.processJoystickInput(0.0, joystickY)
+            val (fwd) = driveCommand.processJoystickInput(0.0, joystickY)
 
-            assert(abs(y) == joystickY * joystickY)
+            assert(abs(fwd) == joystickY * joystickY)
         }
     }
 
-    @Test fun processJoystickInput_preservesSignOfX () {
+    @Test fun processJoystickInput_preservesSignOfRot () {
         for (i in -10..10) {
             val joystickX = i.toDouble()
 
-            val (x) = driveCommand.processJoystickInput(joystickX, 0.0)
+            val (_, rot) = driveCommand.processJoystickInput(joystickX, 0.0)
 
-            if (joystickX > 0) {
-                assert(x > 0)
-            } else if (joystickX < 0) {
-                assert(x < 0)
-            } else {
-                assert(x == 0.0)
+            when {
+                joystickX > 0 -> {
+                    assert(rot > 0)
+                }
+                joystickX < 0 -> {
+                    assert(rot < 0)
+                }
+                else -> {
+                    assert(rot == 0.0)
+                }
             }
         }
     }
 
-    @Test fun processJoystickInput_preservesSignOfY () {
+    @Test fun processJoystickInput_preservesSignOfFwd () {
         for (i in -10..10) {
             val joystickY = i.toDouble()
 
-            val (_, y) = driveCommand.processJoystickInput(0.0, joystickY)
+            val (fwd) = driveCommand.processJoystickInput(0.0, joystickY)
 
             when {
                 joystickY > 0 -> {
-                    assert(y > 0)
+                    assert(fwd > 0)
                 }
                 joystickY < 0 -> {
-                    assert(y < 0)
+                    assert(fwd < 0)
                 }
                 else -> {
-                    assert(y == 0.0)
+                    assert(fwd == 0.0)
                 }
             }
         }
@@ -82,8 +86,8 @@ class DriveCommandSpec {
 
         driveCommand.execute()
 
-        val (expectedX, expectedY) = driveCommand.processJoystickInput(0.5, 0.8)
+        val (expectedFwd, expectedRot) = driveCommand.processJoystickInput(0.5, 0.8)
 
-        verify(differentialDrive).arcadeDrive(expectedY, expectedX)
+        verify(differentialDrive).arcadeDrive(expectedFwd, expectedRot)
     }
 }

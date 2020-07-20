@@ -5,25 +5,25 @@ import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.OI
 
 class DriveCommand(private val differentialDrive: DifferentialDrive, private val oi: OI) : CommandBase() {
-    fun processJoystickInput(joystickX: Double, joystickY: Double): Pair<Double, Double> {
-        val x: Double = if (joystickX < 0) {
-            -(joystickX * joystickX)
+    fun processJoystickInput(x: Double, y: Double): Pair<Double, Double> {
+        val fwd: Double = if (y < 0) {
+            -(y * y)
         } else {
-            joystickX * joystickX
+            y * y
         }
 
-        val y: Double = if (joystickY < 0) {
-            -(joystickY * joystickY)
+        val rot: Double = if (x < 0) {
+            -(x * x)
         } else {
-            joystickY * joystickY
+            x * x
         }
 
-        return Pair(x, y)
+        return Pair(fwd, rot)
     }
 
     override fun execute() {
-        val (x, y) = processJoystickInput(oi.getX(), oi.getY())
+        val (fwd, rot) = processJoystickInput(oi.getX(), oi.getY())
 
-        differentialDrive.arcadeDrive(y, x)
+        differentialDrive.arcadeDrive(fwd, rot)
     }
 }
