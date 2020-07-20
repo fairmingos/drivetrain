@@ -1,23 +1,24 @@
 package frc.robot.commands
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import frc.robot.OI
-import frc.robot.subsystems.DriveSub
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.math.abs
 
 class DriverSpec {
-    private lateinit var driveSub: DriveSub
+    private lateinit var differentialDrive: DifferentialDrive
     private lateinit var oi: OI
     private lateinit var driver: Driver
 
     @BeforeEach fun beforeEach () {
-        driveSub = mock()
+        differentialDrive = mock()
         oi = mock()
-        driver = Driver(driveSub, oi)
+        driver = Driver(differentialDrive, oi)
     }
 
     @Test fun processJoystickInput_doesSquareX () {
@@ -76,14 +77,14 @@ class DriverSpec {
         }
     }
 
-    @Test fun execute_callsDriveSubDriveWithProcessedJoystickInput () {
+    @Test fun execute_callsDifferentialDriveWithProcessedJoystickInput () {
         doReturn(0.5).`when`(oi).getX()
-        doReturn(0.5).`when`(oi).getY()
+        doReturn(0.8).`when`(oi).getY()
 
         driver.execute()
 
-        val (expectedX, expectedY) = driver.processJoystickInput(0.5, 0.5)
+        val (expectedX, expectedY) = driver.processJoystickInput(0.5, 0.8)
 
-        verify(driveSub).drive(expectedX, expectedY)
+        verify(differentialDrive).arcadeDrive(expectedY, expectedX)
     }
 }
