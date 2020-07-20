@@ -1,6 +1,5 @@
 package frc.robot.commands
 
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -10,22 +9,22 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.math.abs
 
-class DriverSpec {
+class DriveCommandSpec {
     private lateinit var differentialDrive: DifferentialDrive
     private lateinit var oi: OI
-    private lateinit var driver: Driver
+    private lateinit var driveCommand: DriveCommand
 
     @BeforeEach fun beforeEach () {
         differentialDrive = mock()
         oi = mock()
-        driver = Driver(differentialDrive, oi)
+        driveCommand = DriveCommand(differentialDrive, oi)
     }
 
     @Test fun processJoystickInput_doesSquareX () {
         for (i in -10..10) {
             val joystickX = i.toDouble()
 
-            val (x) = driver.processJoystickInput(joystickX, 0.0)
+            val (x) = driveCommand.processJoystickInput(joystickX, 0.0)
 
             assert(abs(x) == joystickX * joystickX)
         }
@@ -35,7 +34,7 @@ class DriverSpec {
         for (i in -10..10) {
             val joystickY = i.toDouble()
 
-            val (_, y) = driver.processJoystickInput(0.0, joystickY)
+            val (_, y) = driveCommand.processJoystickInput(0.0, joystickY)
 
             assert(abs(y) == joystickY * joystickY)
         }
@@ -45,7 +44,7 @@ class DriverSpec {
         for (i in -10..10) {
             val joystickX = i.toDouble()
 
-            val (x) = driver.processJoystickInput(joystickX, 0.0)
+            val (x) = driveCommand.processJoystickInput(joystickX, 0.0)
 
             if (joystickX > 0) {
                 assert(x > 0)
@@ -61,7 +60,7 @@ class DriverSpec {
         for (i in -10..10) {
             val joystickY = i.toDouble()
 
-            val (_, y) = driver.processJoystickInput(0.0, joystickY)
+            val (_, y) = driveCommand.processJoystickInput(0.0, joystickY)
 
             when {
                 joystickY > 0 -> {
@@ -81,9 +80,9 @@ class DriverSpec {
         doReturn(0.5).`when`(oi).getX()
         doReturn(0.8).`when`(oi).getY()
 
-        driver.execute()
+        driveCommand.execute()
 
-        val (expectedX, expectedY) = driver.processJoystickInput(0.5, 0.8)
+        val (expectedX, expectedY) = driveCommand.processJoystickInput(0.5, 0.8)
 
         verify(differentialDrive).arcadeDrive(expectedY, expectedX)
     }

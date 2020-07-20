@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.robot.OI
 
-class Driver(private val differentialDrive: DifferentialDrive, private val oi: OI) : CommandBase() {
+class DriveCommand(private val differentialDrive: DifferentialDrive, private val oi: OI) : CommandBase() {
     fun processJoystickInput(joystickX: Double, joystickY: Double): Pair<Double, Double> {
         val x: Double = if (joystickX < 0) {
             -(joystickX * joystickX)
